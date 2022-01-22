@@ -65,12 +65,12 @@ Restart=always
 RestartSec=10
 
 [Install]
-WantedBy=multi-user.target' > /tmp/ha-bt-proximity.service
+WantedBy=multi-user.target' > $TEMPFILE
 sudo cp $TEMPFILE $SERVICEFILE
 
 sudo systemctl enable ha-bt-proximity.service
 #sudo systemctl start ha-bt-proximity.service
 
-sensor-config.sh
+./sensor-config.sh
 
 EOF

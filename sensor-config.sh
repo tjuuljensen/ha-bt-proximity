@@ -47,8 +47,6 @@ if [ ! -z $NEWROOM ] ; then
   sudo sed -i "s/\"$CURRENTROOM/\"$NEWROOM/g" $MQTTFILE
 fi
 
-sudo systemctl restart ha-bt-proximity.service
-
 LOCALIP=$(hostname -i|cut -f2 -d ' ')
 
 if [ $HOSTNAME == "raspberrypi" ] ; then
@@ -63,6 +61,7 @@ if [ $HOSTNAME == "raspberrypi" ] ; then
 fi
 
 if [[ ! -z $(grep "00:00:00:00:00:00" $MQTTFILE) ]] ; then # it seems as there has been added no mac addresses
+  echo
   echo No sensors seems to be defined
 else
   echo
@@ -79,21 +78,20 @@ if [[ $RESPONSE =~ ^(yes|y| ) ]] ; then
   if [ ! -z $BLUETOOTHMAC ] ; then
 
     # Insert in top of mac list
-    sed -i "/^var owners .*/a \"$BLUETOOTHMAC\" // $DEVICENAME" $MQTTFILE
+    sed -i "'/^var owners .*/a \"$BLUETOOTHMAC\" // $DEVICENAME'" $MQTTFILE
 
-    if [[ ! -z $(grep "00:00:00:00:00:00" $MQTTFILE) ]] ; then
+    if [[ -z $(grep "00:00:00:00:00:00" $MQTTFILE) ]] ; then
       # delete line with 00:00:00:00:00:00
       sed '/^"00:00:00:00:00:00"/d'
     fi
 
     echo
     # reload variables from script for final presentation of results
-    CURRENTBROKER=$(awk -F\" '/^var mqtt_host/{print $2}')
-    CURRENTUSERNAME=$(awk -F\" '/^var mqtt_user/{print $2}')
-    CURRENTPASSWD=$(awk -F\" '/^var mqtt_password/{print $2}')
-    CURRENTROOM=$(awk -F\" '/^var mqtt_room/{print $2}')
+    CURRENTBROKER=$(awk -F\" '/^var mqtt_host/{print $2}' $MQTTFILE)
+    CURRENTUSERNAME=$(awk -F\" '/^var mqtt_user/{print $2}' $MQTTFILE)
+    CURRENTPASSWD=$(awk -F\" '/^var mqtt_password/{print $2}' $MQTTFILE)
+    CURRENTROOM=$(awk -F\" '/^var mqtt_room/{print $2}' $MQTTFILE)
 
-    clear
     echo "Add this as sensor data in Home Assistant:"
     echo "#========================================="
     echo "sensor:"

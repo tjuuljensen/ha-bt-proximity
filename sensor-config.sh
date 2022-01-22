@@ -42,7 +42,7 @@ fi
 CURRENTROOM=$(awk -F\" '/^var mqtt_room/{print $2}' $MQTTFILE)
 echo
 echo Current password is $CURRENTROOM
-read -r -p "Enter NEW password (or <Enter> to continue unchanged): " NEWROOM
+read -r -p "Enter NEW room name (or <Enter> to continue unchanged): " NEWROOM
 if [ ! -z $NEWROOM ] ; then
   sudo sed -i "s/\"$CURRENTROOM/\"$NEWROOM/g" $MQTTFILE
 fi
@@ -54,7 +54,7 @@ if [ $HOSTNAME == "raspberrypi" ] ; then
   echo Current hostname is $HOSTNAME
   read -r -p "Enter NEW hostname (or <Enter> to continue unchanged): " NEWHOSTNAME
   if [ ! -z $NEWHOSTNAME ] ; then
-    hostnamectl set-hostname --static "$NEWHOSTNAME"
+    sudo hostnamectl set-hostname --static "$NEWHOSTNAME"
     echo "This host can now be accessed via ssh using pi@$LOCALIP"
     echo
   fi

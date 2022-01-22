@@ -104,3 +104,5 @@ if [[ $RESPONSE =~ ^(yes|y| ) ]] ; then
 
   fi
 fi
+
+sudo systemctl restart ha-bt-proximity.service
